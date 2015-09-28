@@ -91,7 +91,6 @@ describe('LocationFinder', function() {
     it('returns a not found error when the response received is null', function(){
       var result = locationFinder.serialize(null, '24.24.24.24');
       expect(result.host).to.be.equal('24.24.24.24');
-      console.log(result);
       expect(result.error).to.be.equal('The address 24.24.24.24 is not in the database.')
     });
   });
