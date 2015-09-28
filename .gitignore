@@ -8,6 +8,7 @@
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm
 
 *.iml
+.vscode/
 
 ## Directory-based project format:
 .idea/
@@ -35,3 +36,6 @@
 ## File-based project format:
 *.ipr
 *.iws
+
+# Removing personal notes file
+notes.txt

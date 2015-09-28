@@ -14,7 +14,7 @@ var LocationAPI = function(locationFinder) {
 
 LocationAPI.prototype = {
 
-    locationFinder: null,
+    //locationFinder: new LocationFinder(); // Andras why is this necessary?
 
     get: function(request, response) {
         function parse(csv) {

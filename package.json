@@ -17,7 +17,9 @@
   },
   "dependencies": {
     "config": "^1.16.0",
+    "country-data": "0.0.23",
     "express": "^4.13.3",
+    "geoip-lite": "^1.1.6",
     "morgan": "^1.6.1",
     "node-geolite2": "^0.1.7",
     "swagger-ui": "^2.1.3",

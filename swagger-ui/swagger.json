@@ -5,22 +5,36 @@
         "http"
     ],
     "paths": {
-        "/": {
+
+        "/api/countries/{ips}": {
             "get": {
                 "tags": [
-                    "Hello world"
+                    "Countries"
                 ],
-                "summary": "Get hello world",
-                "description": "Get hello world",
-                "operationId": "hello-world",
-                "consumes": [
-                    "application/json",
-                    "application/xml"
-                ],
+                "summary": "Get country information for comma separated IP addresses",
+                "description": "Get country information for comma separated IP addresses",
+                "operationId": "getCountryInfoByIps",
                 "produces": [
                     "application/json",
                     "application/xml"
-                ]
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "ips",
+                        "description": "IP address(es) to query",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Invalid parameter(s) supplied"
+                    }
+                }
             }
         }
     },
