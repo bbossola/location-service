@@ -11,27 +11,26 @@ LocationFinder.prototype = {
 
       return ip.map( function(ip){
         try {
-          var result = geolite.getGeoDataSync(ip);
+          return this.serialize(geolite.getGeoDataSync(ip), ip);
         }
         catch(e) {
           return {host: ip, error: 'Unknown host: ' + ip};
         }
-        return this.serialize(result, ip);
       }, this);
 
     },
     serialize: function(geolite_response, ip) {
+      var result = {};
       if(geolite_response) {
-        var result = {country:{}};
+        result.country = {};
         result.country.language = 'en';
         result.country.iso_code = geolite_response.country.iso_code;
         result.country.name = geolite_response.country.names.en;
         result.host = ip;
       } else {
-        var result = {};
         result.host = ip;
-        result.error = "The address " + ip + " is not in the database."
-      };
+        result.error = 'The address ' + ip + ' is not in the database.';
+      }
       
       return result;
     }

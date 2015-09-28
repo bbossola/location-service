@@ -6,7 +6,7 @@
   "scripts": {
     "start": "export NODE_ENV=production; node app.js",
     "serve": "export NODE_ENV=development; nodemon app.js",
-    "pretestkkk": "jshint --reporter=node_modules/jshint-stylish **/**.js",
+    "pretest": "jshint --reporter=node_modules/jshint-stylish **/**.js",
     "test": "export NODE_ENV=test; mocha test/setup.js test/**/**.js"
   },
   "author": "Andras Popovics",
