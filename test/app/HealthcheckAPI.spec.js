@@ -28,11 +28,11 @@ describe('HealthcheckAPI', function() {
 
         // Arrange
         locationFinder.lookup = function() {
-            return {
+            return [{
                 'country': {
                     'iso_code': 'US'
                 }
-            };
+            }];
         };
 
         // Act
@@ -60,11 +60,11 @@ describe('HealthcheckAPI', function() {
 
         // Arrange
         locationFinder.lookup = function() {
-            return {
+            return [{
                 'country': {
                     'iso_code': 'US'
                 }
-            };
+            }];
         };
 
         // Act

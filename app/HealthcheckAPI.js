@@ -12,10 +12,10 @@ HealthcheckAPI.prototype = {
 
     get: function(request, response) {
     	var healthy;
-    	var lookup;
+    	var lookups;
     	try {
-	    	lookup = this.locationFinder.lookup('8.8.8.8');
-	    	healthy = (lookup.country.iso_code === 'US');
+	    	lookups = this.locationFinder.lookup(['8.8.8.8']);
+	    	healthy = (lookups[0].country.iso_code === 'US');
     	} catch (e) {
 	    	healthy = false;
     	}
