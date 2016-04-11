@@ -2,8 +2,14 @@
 
 'use strict';
 
-var LocationAPI = require('../../app/LocationAPI');
-var LocationFinder = require('../../app/LocationFinder');
+var fetch = function(dependency) {
+    if(dependency === 'LocationFinder') {
+        return function() {};
+    } else {
+        throw new Error('dependency ' + dependency + ' not found')
+    };
+};
+
 
 describe('LocationAPI', function() {
 
@@ -13,8 +19,12 @@ describe('LocationAPI', function() {
         response;
 
     beforeEach(function() {
-        locationFinder = sinon.stub(new LocationFinder());
-        locationAPI = new LocationAPI(locationFinder);
+        var boxer = require('@workshare/boxer')({});
+        locationFinder = sinon.stub();
+
+        boxer.bind('LocationFinder').to(function(){ return locationFinder; });
+        var LocationAPI = require('../../app/LocationAPI')(boxer.fetch);
+        locationAPI = new LocationAPI();
 
         request = { params: {} };
         response = {
@@ -22,7 +32,7 @@ describe('LocationAPI', function() {
         };
     });
 
-    it('should response locationFinder\'s result in the response', function() {
+    it.only('should response locationFinder\'s result in the response', function() {
 
         // Arrange
         request.params.ip = '';

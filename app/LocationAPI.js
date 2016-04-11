@@ -1,27 +1,20 @@
 'use strict';
 
-var LocationFinder = require('./LocationFinder');
+module.exports = function(fetch) {
+    var locationFinder = fetch('LocationFinder');
 
-var LocationAPI = function(locationFinder) {
+    var LocationAPI = function() {
+    };
 
-    if (locationFinder) {
-        this.locationFinder = locationFinder;
-    }
-    else {
-        this.locationFinder = new LocationFinder();
-    }
-};
+    LocationAPI.prototype = {
 
-LocationAPI.prototype = {
-
-    //locationFinder: new LocationFinder(); // Andras why is this necessary?
-
-    get: function(request, response) {
-        function parse(csv) {
-            return csv.split(',');
+        get: function(request, response) {
+            function parse(csv) {
+                return csv.split(',');
+            }
+            response.json(this.locationFinder.lookup(parse(request.params.ip)));
         }
-        response.json(this.locationFinder.lookup(parse(request.params.ip)));
-    }
-};
+    };
 
-module.exports = LocationAPI;
+    return LocationAPI;
+}

@@ -1,4 +1,4 @@
-var Service = require('./app/Service');
+var box = require('./app/box')(require('@workshare/boxer'));
 var config = require('config');
 
-new Service().start(config.get('port'));
+box.fetch('Service').start(config.get('port'));
