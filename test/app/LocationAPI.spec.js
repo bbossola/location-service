@@ -49,7 +49,7 @@ describe('LocationAPI', function() {
         };
     });
 
-    describe.only('#get', function(){
+    describe('#get', function(){
         describe('when the ip contains only one value', function(){
             beforeEach(function(){
                 this.ip = '192.0.0.1';
