@@ -12,7 +12,7 @@ module.exports = function(fetch) {
             function parse(csv) {
                 return csv.split(',');
             }
-            response.json(this.locationFinder.lookup(parse(request.params.ip)));
+            response.json(locationFinder.lookup(parse(request.params.ip)));
         }
     };
 
