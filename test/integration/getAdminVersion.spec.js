@@ -5,7 +5,7 @@ var app = boxer.fetch('app');
 
 var request = require('supertest');
 
-describe.only('[INT] Get Admin Version', function(){
+describe('[INT] Get Admin Version', function(){
 
   it('returns 200', function(done){
     var req = request(app).get('/admin/version');

@@ -1,4 +1,8 @@
-var box = require('./app/box')(require('@workshare/boxer'));
+var path = require('path');
+var boxer = require('@workshare/boxer')({
+    root: path.resolve('lib')
+});
+var box = require('./lib/box')(boxer);
 var config = require('config');
 
-box.fetch('Service').start(config.get('port'));
+boxer.fetch('Service').start(config.get('port'));
