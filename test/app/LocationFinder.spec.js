@@ -2,60 +2,54 @@
 
 'use strict';
 
-var LocationFinder = require('../../app/LocationFinder');
-var geolite = require('node-geolite2');
+var path = require('path');
 
 
 describe('LocationFinder', function() {
-  var locationFinder = new LocationFinder();
-  var geoliteJapan = {country: { iso_code: 'JP', names: {en: 'Japan'}}}
-  var geoliteUsa = {country: { iso_code: 'US', names: {en: 'USA'}}}; 
+  beforeEach(function(){
+    this.boxer = require('@workshare/boxer')({root: path.resolve('lib')});
+    this.boxer.bind('locationFinder').to(require('../../lib/locationFinder'));
+
+    this.getGeoDataSync = sinon.spy();
+
+    this.doSetup = function() {
+      this.geolite = {
+        init: () => {},
+        getGeoDataSync: this.getGeoDataSync
+      };
+      this.boxer.bind('geolite').to(() => this.geolite);
+      this.locationFinder = this.boxer.fetch('locationFinder');
+    };
+  });
 
   describe('lookup', function(ip) {
-
     it('queries the country information for each ip received', function() {
-    
-      var geoliteGetData = sinon.spy(geolite, 'getGeoDataSync');
+      this.doSetup();
+      this.locationFinder.lookup(['24.24.24.24', '99.99.99.99']);
 
-      locationFinder.lookup(['24.24.24.24', '99.99.99.99']);
-
-      expect(geoliteGetData).to.have.been.calledWith('24.24.24.24');
-      expect(geoliteGetData).to.have.been.calledWith('99.99.99.99');
-
-      geoliteGetData.restore();
+      expect(this.getGeoDataSync).to.have.been.calledWith('24.24.24.24');
+      expect(this.getGeoDataSync).to.have.been.calledWith('99.99.99.99');
     });
 
-    it('serializes the countries data', function() {
+// Lets reconsider it next time
+    it.only('serializes the countries data', function() {
+      var geoliteJapan = {country: { iso_code: 'JP', names: {en: 'Japan'}}}
+      var geoliteUsa = {country: { iso_code: 'US', names: {en: 'USA'}}};
 
-      var serialize = sinon.spy(locationFinder, 'serialize');
-      var geoliteGetData = sinon.stub(geolite, 'getGeoDataSync');
+      this.getGeoDataSync = sinon.stub();
+      this.getGeoDataSync.withArgs('24.24.24.24').returns(geoliteJapan);
+      this.getGeoDataSync.withArgs('99.99.99.99').returns(geoliteUsa);
 
-      geoliteGetData.withArgs('24.24.24.24').returns(geoliteJapan);
-      geoliteGetData.withArgs('99.99.99.99').returns(geoliteUsa);
+      this.doSetup();
 
-      locationFinder.lookup(['24.24.24.24', '99.99.99.99']);
+      var serialize = sinon.spy(this.locationFinder, 'serialize');
 
-      expect(serialize).to.have.been.calledWith(geoliteJapan);
+      this.locationFinder.lookup(['24.24.24.24', '99.99.99.99']);
+
+      expect(this.serialize).to.have.been.calledWith(geoliteJapan);
       expect(serialize).to.have.been.calledWith(geoliteUsa);
 
-      geoliteGetData.restore();
-      serialize.restore();
-    });
-
-    it('serializes the countries data', function() {
-
-      var serialize = sinon.spy(locationFinder, 'serialize');
-      var geoliteGetData = sinon.stub(geolite, 'getGeoDataSync');
-
-      geoliteGetData.withArgs('24.24.24.24').returns(geoliteJapan);
-      geoliteGetData.withArgs('99.99.99.99').returns(geoliteUsa);
-
-      locationFinder.lookup(['24.24.24.24', '99.99.99.99']);
-
-      expect(serialize).to.have.been.calledWith(geoliteJapan);
-      expect(serialize).to.have.been.calledWith(geoliteUsa);
-
-      geoliteGetData.restore();
+      this.geoliteGetData.restore();
       serialize.restore();
     });
 
