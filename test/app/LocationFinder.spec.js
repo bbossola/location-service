@@ -20,7 +20,12 @@ describe('LocationFinder', function() {
       this.boxer.bind('geolite').to(() => this.geolite);
       this.locationFinder = this.boxer.fetch('locationFinder');
     };
+
+    this.geoliteJapan = {country: { iso_code: 'JP', names: {en: 'Japan'}}}
+    this.geoliteUsa = {country: { iso_code: 'US', names: {en: 'USA'}}};
   });
+
+
 
   describe('lookup', function(ip) {
     it('queries the country information for each ip received', function() {
@@ -31,34 +36,43 @@ describe('LocationFinder', function() {
       expect(this.getGeoDataSync).to.have.been.calledWith('99.99.99.99');
     });
 
-// Lets reconsider it next time
-    it.only('serializes the countries data', function() {
-      var geoliteJapan = {country: { iso_code: 'JP', names: {en: 'Japan'}}}
-      var geoliteUsa = {country: { iso_code: 'US', names: {en: 'USA'}}};
-
+    it('serializes the countries data', function() {
       this.getGeoDataSync = sinon.stub();
-      this.getGeoDataSync.withArgs('24.24.24.24').returns(geoliteJapan);
-      this.getGeoDataSync.withArgs('99.99.99.99').returns(geoliteUsa);
+      this.getGeoDataSync.withArgs('24.24.24.24').returns(this.geoliteJapan);
+      this.getGeoDataSync.withArgs('99.99.99.99').returns(this.geoliteUsa);
 
       this.doSetup();
 
-      var serialize = sinon.spy(this.locationFinder, 'serialize');
-
-      this.locationFinder.lookup(['24.24.24.24', '99.99.99.99']);
-
-      expect(this.serialize).to.have.been.calledWith(geoliteJapan);
-      expect(serialize).to.have.been.calledWith(geoliteUsa);
-
-      this.geoliteGetData.restore();
-      serialize.restore();
+      expect(
+        this.locationFinder.lookup(['24.24.24.24', '99.99.99.99'])
+      ).to.be.eql([
+        {
+          "country": {
+            "iso_code": "JP",
+            "language": "en",
+            "name": "Japan",
+          },
+          "host": "24.24.24.24"
+        },
+        {
+          "country": {
+            "iso_code": "US",
+            "language": "en",
+            "name": "USA",
+          },
+          "host": "99.99.99.99"
+        }
+      ]);
     });
 
     it('returns fixed error when geolite trows an exception', function(){
-      var geoliteGetData = sinon.stub(geolite, 'getGeoDataSync', function() {
+      this.getGeoDataSync = function() {
         throw('Error');
-      });
+      };
 
-      var result = locationFinder.lookup(['wrongip']);
+      this.doSetup();
+
+      var result = this.locationFinder.lookup(['wrongip']);
 
       expect(result[0].host).to.be.equal('wrongip');
       expect(result[0].error).to.be.equal('Unknown host: wrongip');
@@ -66,26 +80,26 @@ describe('LocationFinder', function() {
   });
 
   describe('serialize', function() {
+    beforeEach(function(){ this.doSetup() });
 
     it('assigns the country name', function(){
-      var result = locationFinder.serialize(geoliteJapan, '24.24.24.24');
+      var result = this.locationFinder.serialize(this.geoliteJapan, '24.24.24.24');
       expect(result.country.name).to.be.equal('Japan');
     });
 
     it('assigns the country iso_code', function(){
-      var result = locationFinder.serialize(geoliteJapan, '24.24.24.24');
+      var result = this.locationFinder.serialize(this.geoliteJapan, '24.24.24.24');
       expect(result.country.iso_code).to.be.equal('JP');
     });
 
     it('assigns the language', function(){
-      var result = locationFinder.serialize(geoliteJapan, '24.24.24.24');
+      var result = this.locationFinder.serialize(this.geoliteJapan, '24.24.24.24');
       expect(result.country.language).to.be.equal('en');
     });
 
     it('returns a not found error when the response received is null', function(){
-      var result = locationFinder.serialize(null, '24.24.24.24');
+      var result = this.locationFinder.serialize(null, '24.24.24.24');
       expect(result.host).to.be.equal('24.24.24.24');
-      console.log(result);
       expect(result.error).to.be.equal('The address 24.24.24.24 is not in the database.')
     });
   });

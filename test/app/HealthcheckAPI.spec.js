@@ -2,101 +2,58 @@
 
 'use strict';
 
-var HealthcheckAPI = require('../../app/HealthcheckAPI');
-var LocationFinder = require('../../app/LocationFinder');
+var path = require('path');
 
 describe('HealthcheckAPI', function() {
+    beforeEach(function(){
+        this.boxer = require('@workshare/boxer')({root: path.resolve('lib')});
+        this.boxer.bind('locationFinder').to(() => this.fakeLocationFinder);
+        this.boxer.bind('healthcheckAPI').to(require('../../lib/api/admin/HealthcheckAPI'));
+        this.fakeLocationFinder = {
+            lookup: function(val) {
+                if(val[0] == '8.8.8.8') {
+                    return [{country: { iso_code: 'US' }}]
+                }
+            }
+        };
 
-    var healthcheckAPI,
-        locationFinder,
-        request,
-        response;
+        this.doSetup = function() {
+          this.healthcheckAPI = this.boxer.fetch('healthcheckAPI');
+        };
 
-    beforeEach(function() {
-        locationFinder = sinon.stub(new LocationFinder());
-        healthcheckAPI = new HealthcheckAPI(locationFinder);
+        this.request = {};
 
-        request = {};
-
-        response = {
+        this.response = {
             json: sinon.spy(),
             status: sinon.spy(),
         };
     });
 
     it('should respond 200 on locationFinder successful call', function() {
+        this.doSetup();
+        this.healthcheckAPI(this.request, this.response);
 
-        // Arrange
-        locationFinder.lookup = function() {
-            return [{
-                'country': {
-                    'iso_code': 'US'
-                }
-            }];
-        };
-
-        // Act
-        healthcheckAPI.get(request, response);
-
-        // Assert
-        expect(response.status).to.have.been.calledWith(200);
-    });
-
-    it('should respond 500 on locationFinder unsuccessful call', function() {
-
-        // Arrange
-        locationFinder.lookup = function() {
-            return null;
-        };
-
-        // Act
-        healthcheckAPI.get(request, response);
-
-        // Assert
-        expect(response.status).to.have.been.calledWith(500);
-    });
-
-    it('should respond with json on locationFinder successful call', function() {
-
-        // Arrange
-        locationFinder.lookup = function() {
-            return [{
-                'country': {
-                    'iso_code': 'US'
-                }
-            }];
-        };
-
-        // Act
-        healthcheckAPI.get(request, response);
-
-        // Assert
-        var expectedJson = {
+        expect(this.response.status).to.have.been.calledWith(200);
+        expect(this.response.json).to.have.been.calledWith({
             'database': {
                 'healthy': true,
             }
-        };
-
-        expect(response.json).to.have.been.calledWith(expectedJson);
+        });
     });
 
-    it('should respond with json on locationFinder unsuccessful call', function() {
-
-        // Arrange
-        locationFinder.lookup = function() {
+    it('should respond 500 on locationFinder unsuccessful call', function() {
+        this.fakeLocationFinder.lookup = function() {
             return null;
         };
+        this.doSetup();
 
-        // Act
-        healthcheckAPI.get(request, response);
+        this.healthcheckAPI(this.request, this.response);
 
-        // Assert
-        var expectedJson = {
+        expect(this.response.status).to.have.been.calledWith(500);
+        expect(this.response.json).to.have.been.calledWith({
             'database': {
                 'healthy': false,
             }
-        };
-
-        expect(response.json).to.have.been.calledWith(expectedJson);
+        });
     });
 });

@@ -7,20 +7,20 @@ var supertest = require('supertest');
 var path = require('path');
 var boxer = require('@workshare/boxer')({root: path.resolve('lib')});
 
-boxer.bind('service').to(require('../../lib/Service'));
+boxer.bind('service').to(require('../../lib/service'));
 boxer.bind('http').to(() => require('http'));
 boxer.bind('express').to(() => require('express'));
 
 boxer.bind('swagger-ui-middleware').to(() => require('swagger-ui-middleware'));
 
 var versionAPI = sinon.spy(function(req, res, next) { next() });
-boxer.bind('api.admin.VersionAPI').to(() => versionAPI);
+boxer.bind('api.admin.versionAPI').to(() => versionAPI);
 
 var locationAPI = sinon.spy(function(req, res, next) { next() });
-boxer.bind('api.LocationAPI').to(() => locationAPI);
+boxer.bind('api.locationAPI').to(() => locationAPI);
 
 var healthcheckAPI = sinon.spy(function(req, res, next) { next() });
-boxer.bind('api.admin.HealthcheckAPI').to(() => healthcheckAPI);
+boxer.bind('api.admin.healthcheckAPI').to(() => healthcheckAPI);
 
 var service = boxer.fetch('service');
 var app;

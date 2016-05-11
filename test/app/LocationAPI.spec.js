@@ -2,7 +2,7 @@
 
 'use strict';
 
-var locationApiFactory = require('../../app/LocationAPI');
+var locationApiFactory = require('../../lib/api/locationAPI');
 var assert = require('assert');
 
 describe('LocationAPI', function() {
@@ -26,7 +26,7 @@ describe('LocationAPI', function() {
 
         this.getSubject = function() {
             this.fetch = function(dependency) {
-                if(dependency === 'LocationFinder') {
+                if(dependency === 'locationFinder') {
                     return {
                         lookup: function(value) {
                             if(JSON.stringify(value) == JSON.stringify(this.ip.split(','))) {
@@ -39,13 +39,12 @@ describe('LocationAPI', function() {
                 };
             }.bind(this);
 
-            var klass = locationApiFactory(this.fetch);
-            return new klass();
+            return locationApiFactory(this.fetch);
         };
 
         this.doAction = function() {
             this.setup();
-            this.getSubject().get(this.req, this.res);
+            this.getSubject()(this.req, this.res);
         };
     });
 

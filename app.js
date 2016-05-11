@@ -5,4 +5,4 @@ var boxer = require('@workshare/boxer')({
 var box = require('./lib/box')(boxer);
 var config = require('config');
 
-boxer.fetch('Service').start(config.get('port'));
+boxer.fetch('service').start(config.get('port'));
