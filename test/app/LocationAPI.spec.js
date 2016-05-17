@@ -25,6 +25,10 @@ describe('LocationAPI', function() {
         };
 
         this.getSubject = function() {
+            this.fakeLogger = {
+                info: sinon.spy()
+            };
+
             this.fetch = function(dependency) {
                 if(dependency === 'locationFinder') {
                     return {
@@ -34,6 +38,8 @@ describe('LocationAPI', function() {
                             };
                         }.bind(this)
                     };
+                } else if(dependency == 'logger') {
+                    return this.fakeLogger;
                 } else {
                     throw new Error('dependency ' + dependency + ' not found')
                 };
@@ -68,6 +74,13 @@ describe('LocationAPI', function() {
             it('should respond with the expected location looked up in the locationFinder', function(){
                 this.doAction();
                 assert.equal(this.jsonValue, this.locationFinderResponse);
+            });
+        });
+
+        describe('in terms of logging', function(){
+            it('logs the received ips', function(){
+                this.doAction();
+                assert(this.fakeLogger.info.calledWith('Looking for ips 192.0.0.1'));
             });
         });
     });
