@@ -31,7 +31,7 @@ LocationFinder.prototype = {
         result.host = ip;
         result.error = 'The address ' + ip + ' is not in the database.';
       }
-      
+
       return result;
     }
 };

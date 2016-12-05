@@ -1,6 +1,12 @@
 {
     "swagger": "2.0",
     "basePath": "/",
+    "info": {
+        "title": "Location API",
+        "description": "Provides geo-location information based on ips.",
+        "termsOfService": "http://www.ef.edu/legal/privacy-policy/",
+        "version": "1.0.0"
+    },
     "schemes": [
         "http"
     ],
@@ -18,15 +24,13 @@
                     "application/json",
                     "application/xml"
                 ],
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "ips",
-                        "description": "IP address(es) to query",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
+                "parameters": [{
+                    "in": "path",
+                    "name": "ips",
+                    "description": "IP address(es) to query",
+                    "required": true,
+                    "type": "string"
+                }],
                 "responses": {
                     "200": {
                         "description": "successful operation"

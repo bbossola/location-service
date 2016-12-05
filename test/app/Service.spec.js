@@ -1,4 +1,5 @@
 /* global afterEach, describe, it, expect, sinon */
+/* jshint expr: true */
 
 'use strict';
 
@@ -64,5 +65,3 @@ describe('Service', function() {
             .end(done);
     });
 });
-
-

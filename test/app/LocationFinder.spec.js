@@ -1,4 +1,4 @@
-/* global beforeEach, describe, it, expect, sinon */
+/* global describe, it, expect, sinon */
 
 'use strict';
 
@@ -8,13 +8,13 @@ var geolite = require('node-geolite2');
 
 describe('LocationFinder', function() {
   var locationFinder = new LocationFinder();
-  var geoliteJapan = {country: { iso_code: 'JP', names: {en: 'Japan'}}}
-  var geoliteUsa = {country: { iso_code: 'US', names: {en: 'USA'}}}; 
+  var geoliteJapan = {country: { iso_code: 'JP', names: {en: 'Japan'}}};
+  var geoliteUsa = {country: { iso_code: 'US', names: {en: 'USA'}}};
 
-  describe('lookup', function(ip) {
+  describe('lookup', function() {
 
     it('queries the country information for each ip received', function() {
-    
+
       var geoliteGetData = sinon.spy(geolite, 'getGeoDataSync');
 
       locationFinder.lookup(['24.24.24.24', '99.99.99.99']);
@@ -60,7 +60,7 @@ describe('LocationFinder', function() {
     });
 
     it('returns fixed error when geolite trows an exception', function(){
-      var geoliteGetData = sinon.stub(geolite, 'getGeoDataSync', function() {
+      sinon.stub(geolite, 'getGeoDataSync', function() {
         throw('Error');
       });
 
@@ -92,7 +92,7 @@ describe('LocationFinder', function() {
       var result = locationFinder.serialize(null, '24.24.24.24');
       expect(result.host).to.be.equal('24.24.24.24');
       console.log(result);
-      expect(result.error).to.be.equal('The address 24.24.24.24 is not in the database.')
+      expect(result.error).to.be.equal('The address 24.24.24.24 is not in the database.');
     });
   });
 });

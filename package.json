@@ -6,7 +6,7 @@
   "scripts": {
     "start": "export NODE_ENV=production; node app.js",
     "serve": "export NODE_ENV=development; nodemon app.js",
-    "pretest": "jshint --reporter=node_modules/jshint-stylish **/**.js",
+    "pretest": "jshint --reporter=node_modules/jshint-stylish --exclude ./node_modules .",
     "test": "export NODE_ENV=test; mocha test/setup.js test/**/**.js"
   },
   "author": "Andras Popovics",
@@ -22,7 +22,7 @@
     "geoip-lite": "^1.1.6",
     "morgan": "^1.6.1",
     "node-geolite2": "^0.1.7",
-    "swagger-ui": "^2.1.3",
+    "swagger-ui": "^2.2.6",
     "swagger-ui-middleware": "^1.0.0"
   },
   "devDependencies": {
