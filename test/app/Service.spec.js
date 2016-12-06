@@ -28,7 +28,7 @@ describe('Service', function() {
         app = new Service({locationAPI: locationAPI}).start(1234);
 
         supertest(app)
-            .get('/api/countries/128.1.1.231')
+            .get('/api/v1.0/countries/128.1.1.231')
             .expect(function() {
                 expect(locationAPIGet).to.have.been.called;
             })

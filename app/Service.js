@@ -24,7 +24,11 @@ Service.prototype = {
 
         swaggerUiMiddleware.hostUI(app, {overrides: __dirname + '/../swagger-ui/'});
 
-        app.get('/api/countries/:ip', function(request, response) {
+        app.get('/', function(request, response) {
+            response.redirect('/api-doc');
+        });
+
+        app.get('/api/v1.0/countries/:ip', function(request, response) {
             locationAPI.get(request, response);
         });
 
